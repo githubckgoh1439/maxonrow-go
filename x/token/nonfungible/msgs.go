@@ -100,11 +100,14 @@ type Payload struct {
 }
 
 type TokenData struct {
-	From      sdkTypes.AccAddress `json:"from"`
-	Nonce     string              `json:"nonce"`
-	Status    string              `json:"status"`
-	Symbol    string              `json:"symbol"`
-	TokenFees []TokenFee          `json:"tokenFees,omitempty"`
+	From          sdkTypes.AccAddress   `json:"from"`
+	Nonce         string                `json:"nonce"`
+	Status        string                `json:"status"`
+	Symbol        string                `json:"symbol"`
+	TransferLimit sdkTypes.Uint         `json:"transferLimit"`
+	MintLimit     sdkTypes.Uint         `json:"mintLimit"`
+	TokenFees     []TokenFee            `json:"tokenFees,omitempty"`
+	EndorserList  []sdkTypes.AccAddress `json:"endorserList"`
 }
 
 type TokenFee struct {
@@ -128,13 +131,16 @@ func NewPayload(token TokenData, pubKey crypto.PubKey, signature []byte) *Payloa
 	}
 }
 
-func NewToken(from sdkTypes.AccAddress, nonce, status, symbol string, tokenFees []TokenFee) *TokenData {
+func NewToken(from sdkTypes.AccAddress, nonce, status, symbol string, transferLimit, mintLimit sdkTypes.Uint, tokenFees []TokenFee, endorserList []sdkTypes.AccAddress) *TokenData {
 	return &TokenData{
-		From:      from,
-		Nonce:     nonce,
-		Status:    status,
-		Symbol:    symbol,
-		TokenFees: tokenFees,
+		From:          from,
+		Nonce:         nonce,
+		Status:        status,
+		Symbol:        symbol,
+		TransferLimit: transferLimit,
+		MintLimit:     mintLimit,
+		TokenFees:     tokenFees,
+		EndorserList:  endorserList,
 	}
 }
 
@@ -575,4 +581,26 @@ func NewSignature(pubKey crypto.PubKey, signature []byte) Signature {
 		PubKey:    pubKey,
 		Signature: signature,
 	}
+}
+
+//ORIG - goh-changed123
+func NewItemPayload(itemDetails ItemDetails, pubKey crypto.PubKey, signature []byte) *ItemPayload {
+	return &ItemPayload{
+		Item:      itemDetails,
+		PubKey:    pubKey,
+		Signature: signature,
+	}
+
+}
+
+//ORIG - goh-changed123
+func NewItemDetails(from sdkTypes.AccAddress, nonce string, status string, symbol string, itemID []byte) *ItemDetails {
+	return &ItemDetails{
+		From:   from,
+		Nonce:  nonce,
+		Status: status,
+		Symbol: symbol,
+		ItemID: itemID,
+	}
+
 }
